@@ -15,7 +15,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-#define PC_BAUDRATE 57600
+#define PC_BAUDRATE 57600    //set GPS  BAUDRATE
 #define GPS_BAUDRATE 57600  //set GPS  BAUDRATE
 #define GPS_RX 3
 #define GPS_TX 2

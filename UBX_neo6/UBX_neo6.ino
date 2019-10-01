@@ -22,6 +22,7 @@
 
 SoftwareSerial ss(GPS_TX, GPS_RX);
 UbxGpsNavPosllh<SoftwareSerial> gps(ss);  //NEO-6M does NOT support NavPvt-messages UBX-protocol
+//UbxGpsNavPosllh<HardwareSerial> gps(Serial);  - GPS on HardwareSerial
 
 char datetime[DATETIME_LENGTH];
 
