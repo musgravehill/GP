@@ -8,51 +8,43 @@
    GND - GND
 */
 
-#include <Arduino.h>
-#include <SoftwareSerial.h>
-#include "UbxGpsNavPvt.h"
-
 #define GPS_BAUDRATE 57600L
-#define GPS_RX 3
-#define GPS_TX 2
 #define PC_BAUDRATE 57600L
 
-#define DATETIME_FORMAT "%04d.%02d.%02d %02d:%02d:%02d"
-#define DATETIME_LENGTH 20
+#include <Arduino.h>
+#include <SoftwareSerial.h>
 
-SoftwareSerial ss(GPS_TX, GPS_RX);
-UbxGpsNavPvt<SoftwareSerial> gps(ss);
-//UbxGpsNavPosllh<HardwareSerial> gps(Serial);  - GPS on HardwareSerial
+#include "UBLOX.h"
+UBLOX gps(Serial, GPS_BAUDRATE);
 
-#define DATETIME_FORMAT "%04d.%02d.%02d %02d:%02d:%02d"
-#define DATETIME_LENGTH 20
-char datetime[DATETIME_LENGTH];
+SoftwareSerial ss(2, 3);
 
-void setup()
-{
-  Serial.begin(PC_BAUDRATE);
-  gps.begin(GPS_BAUDRATE);
+
+void setup(){
+  ss.begin(PC_BAUDRATE);
+  gps.begin();
 }
 
-void loop(){
-  if (gps.ready())  {
-    // snprintf(datetime, DATETIME_LENGTH, DATETIME_FORMAT, gps.year, gps.month, gps.day, gps.hour, gps.min, gps.sec);
-
-    //Serial.println(datetime);
-
-    Serial.print(gps.lon / 10000000.0, 7);
-    Serial.print(',');
-    Serial.print(gps.lat / 10000000.0, 7);
-    Serial.print(',');
-    Serial.print(gps.height / 1000.0, 3);
-    Serial.print(',');
-    Serial.print(gps.gSpeed * 0.0036, 5);
-    Serial.print(',');
-    Serial.print(gps.headMot / 100000.0, 5);
-    Serial.print(',');
-    Serial.print(gps.fixType);
-    Serial.print(',');
-    Serial.println(gps.numSV);
-
+void loop() {
+ if(gps.readSensor()) {
+    ss.print(gps.getYear());                ///< [year], Year (UTC)
+    ss.print("\t");
+    ss.print(gps.getMonth());               ///< [month], Month, range 1..12 (UTC)
+    ss.print("\t");
+    ss.print(gps.getDay());                 ///< [day], Day of month, range 1..31 (UTC)
+    ss.print("\t");
+    ss.print(gps.getHour());                ///< [hour], Hour of day, range 0..23 (UTC)
+    ss.print("\t");
+    ss.print(gps.getMin());                 ///< [min], Minute of hour, range 0..59 (UTC)
+    ss.print("\t");
+    ss.print(gps.getSec());                 ///< [s], Seconds of minute, range 0..60 (UTC)
+    ss.print("\t");
+    ss.print(gps.getNumSatellites());       ///< [ND], Number of satellites used in Nav Solution
+    ss.print("\t");
+    ss.print(gps.getLatitude_deg(),10);     ///< [deg], Latitude
+    ss.print("\t");
+    ss.print(gps.getLongitude_deg(),10);    ///< [deg], Longitude
+    ss.print("\t");
+    ss.println(gps.getMSLHeight_m());      ///< [ft], Height above mean sea level
   }
 }

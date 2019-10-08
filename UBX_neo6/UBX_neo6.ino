@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <UbxGpsNavPosllh.h>
+#include "UbxGpsNavPosllh.h"
 
 #define GPS_BAUDRATE 57600L
 #define GPS_RX 3
